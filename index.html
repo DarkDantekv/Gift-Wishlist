@@ -494,6 +494,7 @@
         <input id="itemName" placeholder="Item name" />
         <input id="itemLink" placeholder="Item link, ex: https://amazon.com/..." />
         <input id="itemPrice" type="number" min="0" step="0.01" placeholder="Price, ex: 49.99" />
+        <input id="itemImage" placeholder="Paste image URL here" />
         <select id="itemStatus">
           <option value="want">Want</option>
           <option value="owned">Owned</option>
@@ -522,6 +523,7 @@
               name: "Cozy Hoodie",
               link: "https://example.com",
               price: 55,
+              image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800"
               status: "want"
             }
           ]
@@ -535,6 +537,7 @@
               name: "Nice Candle Set",
               link: "https://example.com",
               price: 32,
+              image: "https://images.unsplash.com/photo-1602872029708-84d970d3380a?w=800"
               status: "want"
             }
           ]
@@ -642,6 +645,7 @@
         });
 
         card.innerHTML = `
+          ${item.image ? `<img src="${item.image}" alt="${escapeHtml(item.name)}" style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:12px;" />` : ""}
           <div class="item-top">
             <div>
               <div class="item-title">${escapeHtml(item.name)}</div>
@@ -698,11 +702,13 @@
         document.getElementById("itemName").value = item.name;
         document.getElementById("itemLink").value = item.link;
         document.getElementById("itemPrice").value = item.price;
+        document.getElementById("itemImage").value = item.image || "";
         document.getElementById("itemStatus").value = item.status;
       } else {
         document.getElementById("itemName").value = "";
         document.getElementById("itemLink").value = "";
         document.getElementById("itemPrice").value = "";
+        document.getElementById("itemImage").value = "";
         document.getElementById("itemStatus").value = "want";
       }
 
@@ -719,6 +725,7 @@
       const name = document.getElementById("itemName").value.trim();
       const link = document.getElementById("itemLink").value.trim();
       const price = parseFloat(document.getElementById("itemPrice").value || 0);
+      const image = document.getElementById("itemImage").value.trim();
       const status = document.getElementById("itemStatus").value;
 
       if (!name) {
@@ -731,6 +738,7 @@
         item.name = name;
         item.link = link;
         item.price = price;
+        item.image = image;
         item.status = status;
       } else {
         person.items.push({
@@ -738,6 +746,7 @@
           name,
           link,
           price,
+          image,
           status
         });
       }
