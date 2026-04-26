@@ -584,12 +584,18 @@
           .toUpperCase();
 
         card.innerHTML = `
-          <div class="avatar">${initials}</div>
-          <div>
-            <div class="person-name">${escapeHtml(person.name)}</div>
-            <div class="person-count">${person.items.length} wishlist item${person.items.length === 1 ? "" : "s"}</div>
-          </div>
-        `;
+  <div class="avatar">${initials}</div>
+  <div style="flex:1;">
+    <div class="person-name">${escapeHtml(person.name)}</div>
+    <div class="person-count">${person.items.length} wishlist item${person.items.length === 1 ? "" : "s"}</div>
+  </div>
+  <button 
+    class="danger-btn small-btn"
+    onclick="event.stopPropagation(); deletePerson('${person.id}')"
+  >
+    ✕
+  </button>
+`;
 
         personList.appendChild(card);
       });
@@ -756,6 +762,27 @@
       saveState();
       renderAll();
     }
+
+    function deletePerson(personId) {
+  const person = state.people.find(p => p.id === personId);
+
+  if (!person) return;
+
+  const confirmed = confirm(`Delete ${person.name} and all wishlist items?`);
+  if (!confirmed) return;
+
+  state.people = state.people.filter(p => p.id !== personId);
+
+  // If deleted person was selected, switch to first available person
+  if (state.selectedPersonId === personId) {
+    state.selectedPersonId = state.people.length
+      ? state.people[0].id
+      : null;
+  }
+
+  saveState();
+  renderAll();
+}
 
     function downloadBackup() {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
